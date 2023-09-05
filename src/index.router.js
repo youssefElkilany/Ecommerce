@@ -10,12 +10,13 @@ import reviewsRouter from './modules/reviews/reviews.router.js'
 import subcategoryRouter from './modules/subcategory/subcategory.router.js'
 import userRouter from './modules/user/user.router.js'
 import { globalErrorHandling } from './utils/errorHandling.js'
-
+import cors from 'cors'
 
 
 const initApp = (app, express) => {
     //convert Buffer Data
 
+    app.use(cors())
     app.use((req,res,next)=>{
         if(req.original_url == '/order/webhook')
         {
