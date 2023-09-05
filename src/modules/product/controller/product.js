@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import productModel from "../../../../DB/model/product.model.js";
+import productModel from "../../../../DB/model/Product.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import categoryModel from "../../../../DB/model/Category.model.js";
 import subcategoryModel from "../../../../DB/model/SubCategory.model.js";

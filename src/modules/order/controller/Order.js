@@ -1,7 +1,7 @@
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import orderModel from "../../../../DB/model/Order.model.js";
 import couponModel from "../../../../DB/model/Coupon.model.js";
-import productModel from "../../../../DB/model/product.model.js";
+import productModel from "../../../../DB/model/Product.model.js";
 import cartModel from "../../../../DB/model/Cart.model.js";
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.stripe_Key)

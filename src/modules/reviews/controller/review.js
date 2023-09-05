@@ -1,6 +1,6 @@
 import orderModel from "../../../../DB/model/Order.model.js";
 import reviewModel from "../../../../DB/model/Review.model.js";
-import productModel from "../../../../DB/model/product.model.js";
+import productModel from "../../../../DB/model/Product.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 
 
