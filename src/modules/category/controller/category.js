@@ -56,9 +56,15 @@ export const deleteCategory = asyncHandler(async(req,res,next)=>{
     {
         return next(new Error("not found"))
     }
+    if(checkcat.createdBy!= req.user._id)
+    {
+        return next(new Error("u are not authorized to delete this product"))
+    }
     const cloud = cloudinary.uploader.destroy(checkcat.image.public_id)
     return res.status(StatusCodes.ACCEPTED).json({ message: "deleted", checkcat })
 })
+
+
 // hena myf3sh nseeb el esm zy ma howa bn8yro lma bneegy n3ml update
 export const updateCategory = asyncHandler(async(req,res,next)=>{
 

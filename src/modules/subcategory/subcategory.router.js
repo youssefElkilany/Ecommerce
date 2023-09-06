@@ -11,7 +11,7 @@ const router = Router({mergeParams:true})
 
 
 router.get('/', subcategoryController.SubCategories)
-router.post("/:categoryId",auth([roles.user]),fileUpload(fileValidation.image).single("image"),validation(val.addSubCategory),subcategoryController.addSubCategory)
+router.post("/:categoryId",auth([roles.admin]),fileUpload(fileValidation.image).single("image"),validation(val.addSubCategory),subcategoryController.addSubCategory)
 
 router.delete("/:_id",validation(val.deleteSubCategory),subcategoryController.deleteSubCategory)
 

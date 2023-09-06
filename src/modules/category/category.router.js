@@ -16,7 +16,7 @@ router.get("/id/:_id",categoryController.categorybyid)
 
 router.get("/virtual",categoryController.Categories2)
 
-router.post('/',auth([roles.user]),
+router.post('/',auth([roles.admin]),
     fileUpload(fileValidation.image).single('image'),
     validation(Val.addCategoryVal),
     asyncHandler(categoryController.addCategory)
@@ -34,6 +34,7 @@ router.put('/2',
 
 
 router.delete('/:categoryId',
+     auth(roles.admin),
     validation(Val.deleteCategoryVal),
     asyncHandler(categoryController.deleteCategory)
 )

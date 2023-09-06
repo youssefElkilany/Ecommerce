@@ -11,7 +11,7 @@ const router = Router()
 router.get('/', (req ,res)=>{
     res.status(200).json({message:"Coupon Module"})
 })
-router.post('/',auth([roles.user]),couponController.addCoupon)  //elmfrood roles => admin
+router.post('/',auth([roles.admin]),couponController.addCoupon)  //elmfrood roles => admin
 
 
 
