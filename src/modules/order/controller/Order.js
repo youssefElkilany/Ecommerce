@@ -4,6 +4,10 @@ import couponModel from "../../../../DB/model/Coupon.model.js";
 import productModel from "../../../../DB/model/Product.model.js";
 import cartModel from "../../../../DB/model/Cart.model.js";
 import Stripe from "stripe";
+import sendEmail from "../../../utils/email.js";
+import { nanoid } from "nanoid";
+import createInvoice from "../../../utils/PDFKits.js";
+
 const stripe = new Stripe(process.env.stripe_Key)
 
 
@@ -144,21 +148,54 @@ if(req.body.Coupon)
 
 
 //to delete cart or products that exist in cart 
-// if(req.body.products)
-// {
-// const cart = await cartModel.updateOne({userId:req.user._id},{
-//     $pull:{
-//         products:{
-//             product:{
-//                 $in:foundedIds
-//             } 
-//         }
-//     }
-// })
-// }
-// else{
-//     const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
-// }
+if(req.body.products)
+{
+const cart = await cartModel.updateOne({userId:req.user._id},{
+    $pull:{
+        products:{
+            product:{
+                $in:foundedIds
+            } 
+        }
+    }
+})
+}
+else{
+    const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
+}
+
+// console.log({order:order.products.name})
+const orderCode = `${req.user.email}_${nanoid(3)}`
+  // generat invoice object
+  const orderinvoice = {
+    shipping: {
+      name: req.user.email,
+      address: order.address,
+      city: 'Cairo',
+      state: 'Cairo',
+      country: 'Cairo',
+    },
+    orderCode,
+    date: order.createdAt,
+    items: order.products,
+    subTotal: order.price,
+    paidAmount: order.paymentPrice,
+  }
+  // fs.unlink()
+  await createInvoice(orderinvoice, `${orderCode}.pdf`)
+  await sendEmail({
+    to: req.user.email,
+    subject: 'Order Confirmation',
+    message: '<h1> please find your invoice pdf below</h1>',
+    attachments: [
+      {
+        path: `./Files/${orderCode}.pdf`,
+      },
+    ],
+  })
+  //return res.status(201).json({ message: 'Done', order })
+
+
 
 
 
