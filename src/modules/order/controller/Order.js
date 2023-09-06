@@ -237,9 +237,9 @@ export const webhook = asyncHandler(async(req, res) => {
         break;
       // ... handle other event types
       default:
+        res.json({message:"invalid payment"})
         console.log(`Unhandled event type ${event.type}`);
     }
   
     // Return a 200 res to acknowledge receipt of the event
-    res.send();
   });
