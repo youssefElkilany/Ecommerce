@@ -84,14 +84,14 @@ export const getproducts = asyncHandler(async(req,res,next)=>{
 
 export const addProduct = asyncHandler(async(req,res,next)=>{
     let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
-   // price = JSON.parse(price)
-//console.log({name,price,discount,categoryId,subcategoryId,brandId})
-//console.log(req.body)
-//console.log({files:req.files})
+   
+
     const checkproduct = await productModel.findOne({name})
     if(checkproduct)
     {
-       return next(new Error("name already exist"))
+        checkproduct.stock += JSON.parse( req.body.quantity)
+         await checkproduct.save()
+         return res.json({message:"done",product:checkproduct})
     }
 
     const category = await categoryModel.findById({_id:categoryId})
@@ -139,7 +139,7 @@ if(!req.files.coverImages)
     const product = await productModel.create(req.body)
     return res.json({message:"done",product})
 }
-console.log("gg")
+//console.log("gg")
 //bytl3 error lw enta md5ltsh coverImages 3la (length)
     if(req.files.coverImages.length)
     {
@@ -151,7 +151,6 @@ console.log("gg")
         }
         req.body.coverImages = coverImages
     }
-    
   // return res.json({files:req.files})
 
 //console.log({paymentPrice:paymentPrice})

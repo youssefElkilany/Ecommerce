@@ -1,10 +1,11 @@
 import { Router } from "express";
 import * as categoryController from "./controller/category.js";
 import { fileUpload, fileValidation } from "../../utils/multer.js";
-import { validation } from "../../middleware/validation.js";
+import { roles, validation } from "../../middleware/validation.js";
 import * as Val from "./category.validation.js";
 import { asyncHandler } from "../../utils/errorHandling.js";
 import subctegoryRouter from "../subcategory/subcategory.router.js"
+import auth from "../../middleware/auth.js";
 const router = Router({mergeParams:true})
 
 router.use('/:categoryId/subCategory',subctegoryRouter)
@@ -15,7 +16,7 @@ router.get("/id/:_id",categoryController.categorybyid)
 
 router.get("/virtual",categoryController.Categories2)
 
-router.post('/',
+router.post('/',auth([roles.user]),
     fileUpload(fileValidation.image).single('image'),
     validation(Val.addCategoryVal),
     asyncHandler(categoryController.addCategory)

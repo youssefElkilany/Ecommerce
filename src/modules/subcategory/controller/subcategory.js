@@ -22,7 +22,7 @@ export const addSubCategory = asyncHandler(async(req,res,next)=>{
 
     const {name}= req.body
     const {categoryId} = req.params
-    console.log({name,categoryId})
+    //console.log({name,categoryId})
 
 const slug = slugify(name)
 const category = await categoryModel.findById({_id:categoryId})
@@ -37,11 +37,12 @@ if(!category)
     }
     if(!req.file)
     {
-        const subCategory = await subcategoryModel.create({name,slug,categoryId})
+        const subCategory = await subcategoryModel.create({name,createdBy:req.user._id,slug,categoryId})
     return res.json({message:"done",subCategory})
     }
 const { secure_url , public_id} = await cloudinary.uploader.upload(req.file.path)//,{folder:"subcategory"})
-    const subCategory = await subcategoryModel.create({name,slug,categoryId,image:{secure_url,public_id}})
+
+    const subCategory = await subcategoryModel.create({name,slug,categoryId,createdBy:req.user._id,image:{secure_url,public_id}})
     return res.json({message:"done",subCategory})
 })
 

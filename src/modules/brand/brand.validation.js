@@ -15,7 +15,7 @@ export const updatebrand = {
         name: generalFields.name,
         _id: generalFields.id
     }),
-    file: generalFields.file,
+   // file: generalFields.file,
     params: joi.object().required().keys({}),
     query: joi.object().required().keys({})
 }

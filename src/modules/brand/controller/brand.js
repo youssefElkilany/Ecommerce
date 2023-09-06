@@ -28,12 +28,12 @@ export const addbrand = asyncHandler(async(req,res,next)=>{
     const slug = slugify(name)
     if(!req.file)
     {
-        const brand = await brandModel.create({name,slug})
+        const brand = await brandModel.create({name,slug,createdBy:req.user._id})
         return res.json({message:"done",brand})
     }
 
     const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:"brand"})
-    const brand = await brandModel.create({name,slug,logo:{secure_url,public_id}})
+    const brand = await brandModel.create({name,slug,createdBy:req.user._id,logo:{secure_url,public_id}})
     return res.json({message:"done",brand})
 })
 
@@ -41,6 +41,7 @@ export const addbrand = asyncHandler(async(req,res,next)=>{
 export const updatebrand = asyncHandler(async(req,res,next)=>{
 
     const {name,_id}=req.body
+   // console.log(name)
     const slug = slugify(name)
     const checkbrand = await brandModel.findById({_id})
     if(!checkbrand)

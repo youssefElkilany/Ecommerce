@@ -6,6 +6,15 @@ import cartModel from "../../../../DB/model/Cart.model.js";
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.stripe_Key)
 
+
+export const getOrderByUserId = asyncHandler(async(req,res,next)=>{
+
+    const order = await orderModel.find({createdBy:req.user._id})
+    return res.json({order:order})
+}) 
+
+
+
 export const addOrder = asyncHandler(async(req,res,next)=>{
 
     let {Coupon,products,address,phoneNo,price,paymentPrice,quantity,note,paymentMethod} = req.body
@@ -135,21 +144,21 @@ if(req.body.Coupon)
 
 
 //to delete cart or products that exist in cart 
-if(req.body.products)
-{
-const cart = await cartModel.updateOne({userId:req.user._id},{
-    $pull:{
-        products:{
-            product:{
-                $in:foundedIds
-            } 
-        }
-    }
-})
-}
-else{
-    const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
-}
+// if(req.body.products)
+// {
+// const cart = await cartModel.updateOne({userId:req.user._id},{
+//     $pull:{
+//         products:{
+//             product:{
+//                 $in:foundedIds
+//             } 
+//         }
+//     }
+// })
+// }
+// else{
+//     const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
+// }
 
 
 
@@ -204,14 +213,15 @@ return res.json({message:"order successfull",order})
 
 
 
+
 //event.data.object.metadata
 export const webhook = asyncHandler(async(req, res) => {
     const sig = req.headers['stripe-signature'];
   
     let event;
-  
+  console.log({endpointSecret:process.env.endpointSecret})
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body,sig, process.env.endpointSecret);
     } catch (err) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;

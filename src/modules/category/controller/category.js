@@ -33,14 +33,14 @@ export const addCategory = asyncHandler(async (req,res,next)=>{
     }
     if(!req.file)
     {
-        const category = await categoryModel.create({name,slug})
+        const category = await categoryModel.create({name,slug,createdBy:req.user._id})
   
    return res.json({Message:"done",category})
     }
     
     const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`category`}) 
-
-    const category = await categoryModel.create({name,slug,image:{secure_url,public_id}})
+console.log("ff")
+    const category = await categoryModel.create({name,slug,createdBy:req.user._id,image:{secure_url,public_id}})
 
     return res.json({Message:"done",category})
   

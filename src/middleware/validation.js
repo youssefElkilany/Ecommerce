@@ -23,7 +23,7 @@ export const generalFields = {
     }).required(),
     password: joi.string(),
     cPassword: joi.string().required(),
-    id: joi.string().custom(validateObjectId).required(),
+    id: joi.string().custom(validateObjectId),
     name: joi.string().required(),
     file: joi.object({
         size: joi.number().positive().required(),

@@ -21,7 +21,7 @@ router.get('/id/:_id',auth([roles.admin]),validation(val.searchbyId),brandContro
 router.get('/search',validation(val.searchbyName),brandController.searchbyName)
 
 
-router.post("/",auth([roles.admin]),validation(val.addbrand),fileUpload(fileValidation.image).single('image') ,brandController.addbrand)
+router.post("/",auth([roles.user]),fileUpload(fileValidation.image).single('image'),validation(val.addbrand) ,brandController.addbrand)
 router.put("/",auth([roles.admin]),validation(val.updatebrand),fileUpload(fileValidation.image).single('image') ,brandController.updatebrand)
 router.delete("/_id",auth([roles.admin]),validation(val.deletebrand),brandController.deletbrand)
 

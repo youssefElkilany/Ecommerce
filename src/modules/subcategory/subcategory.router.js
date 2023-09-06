@@ -1,6 +1,9 @@
 import { Router } from "express";
 import * as subcategoryController from  './controller/subcategory.js'
+import * as val from "./subcategory.validation.js"
 import { fileUpload, fileValidation } from "../../utils/multer.js";
+import { roles, validation } from "../../middleware/validation.js";
+import auth from "../../middleware/auth.js";
 const router = Router({mergeParams:true})
 
 
@@ -8,9 +11,12 @@ const router = Router({mergeParams:true})
 
 
 router.get('/', subcategoryController.SubCategories)
-router.post("/:categoryId",fileUpload(fileValidation.image).single("image"),subcategoryController.addSubCategory)
-router.delete("/:_id",subcategoryController.deleteSubCategory)
+router.post("/:categoryId",auth([roles.user]),fileUpload(fileValidation.image).single("image"),validation(val.addSubCategory),subcategoryController.addSubCategory)
+
+router.delete("/:_id",validation(val.deleteSubCategory),subcategoryController.deleteSubCategory)
+
 router.put("/",fileUpload(fileValidation.image).single('image'),subcategoryController.updateSubCategory)
+
 router.get("/search",subcategoryController.searchByName)
 
 
