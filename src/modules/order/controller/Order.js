@@ -219,7 +219,7 @@ export const webhook = asyncHandler(async(req, res) => {
     const sig = req.headers['stripe-signature'];
   
     let event;
-  console.log({endpointSecret:process.env.endpointSecret})
+ // console.log({endpointSecret:process.env.endpointSecret})
     try {
       event = stripe.webhooks.constructEvent(req.body,sig, process.env.endpointSecret);
     } catch (err) {
@@ -233,7 +233,7 @@ export const webhook = asyncHandler(async(req, res) => {
         const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
             status:"placed"
         },{new:true})
-        res.json({order})
+       return res.json({order:order})
         break;
       // ... handle other event types
       default:

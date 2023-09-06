@@ -11,5 +11,7 @@ router.route('/')
 .get(auth([roles.user]),orderController.getOrderByUserId)
 .post(auth(roles.user),validation(val.addOrder),orderController.addOrder)
  
-//router.post('/webhook', express.raw({type: 'application/json'}),orderController.webhook) 
+router.post('/webhook', express.raw({type: 'application/json'}),orderController.webhook) 
+
+
 export default router
