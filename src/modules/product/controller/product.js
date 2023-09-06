@@ -249,6 +249,10 @@ export const deleteproduct = asyncHandler(async(req,res,next)=>{
     {
         return next(new Error("not found"))
     }
+    if(checkcat.createdBy!= req.user._id)
+    {
+        return next(new Error("u are not authorized to delete this product"))
+    }
    // checkcat.image.public_id
      await cloudinary.uploader.destroy(checkcat.image.public_id)
      await cloudinary.uploader.destroy(category.coverImages.public_id)

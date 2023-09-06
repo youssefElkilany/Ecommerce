@@ -1,6 +1,8 @@
 import { Router } from "express";
 import * as productController from "./controller/product.js"
 import { fileUpload, fileValidation } from "../../utils/multer.js";
+import auth from "../../middleware/auth.js";
+import { roles } from "../../middleware/validation.js";
 const router = Router()
 
 
@@ -19,7 +21,7 @@ router.put("/",fileUpload(fileValidation.image).fields([
 ])
 ,productController.updateProduct)
 
-router.delete('/:_id',productController.deleteproduct)
+router.delete('/:_id',auth(roles.user),productController.deleteproduct)
 
 
 
