@@ -16,9 +16,7 @@ export const updateSubCategory = {
         _id: generalFields.id.required()
     }),
     file: generalFields.file,
-    params: joi.object().required().keys({
-        SubcategoryId: generalFields.id
-    }),
+    params: joi.object().required().keys({}),
     query: joi.object().required().keys({})
 }
 
@@ -34,6 +32,6 @@ export const searchSubCategory = {
     body: joi.object().required().keys({}),
     params: joi.object().required().keys({}),
     query: joi.object().required().keys({
-        searchKey: generalFields.name
+        name: generalFields.name
     })
 }

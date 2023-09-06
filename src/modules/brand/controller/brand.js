@@ -70,7 +70,7 @@ export const updatebrand = asyncHandler(async(req,res,next)=>{
     await cloudinary.uploader.destroy(checkbrand.logo.public_id)
     const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:"brand"})
 
-    const brand = await brandModel.findOneAndUpdate({_id},{name,slug,logo:{secure_url,public_id}},{new:true})
+    const brand = await brandModel.findOneAndUpdate({_id,createdBy:checkbrand.createdBy},{name,slug,logo:{secure_url,public_id}},{new:true})
         return res.json({message:"updated",brand})
     
 })

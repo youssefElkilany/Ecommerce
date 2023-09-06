@@ -16,9 +16,9 @@ import cors from 'cors'
 const initApp = (app, express) => {
     //convert Buffer Data
 
-   // app.use(cors())
+    app.use(cors())
     app.use((req,res,next)=>{
-        console.log(req.originalUrl)
+      //  console.log(req.originalUrl)
         if(req.originalUrl == '/order/webhook')
         {
             next()

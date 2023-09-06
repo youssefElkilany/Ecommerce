@@ -63,7 +63,7 @@ export const deleteSubCategory = asyncHandler(async(req,res,next)=>{
 
 
 export const updateSubCategory = asyncHandler(async(req,res,next)=>{
-    const {_id,name,categoryId} = req.body
+    const {_id,name} = req.body
 
     const subcat = await subcategoryModel.findById(_id)
     if(!subcat)

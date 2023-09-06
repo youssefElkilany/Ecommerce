@@ -219,8 +219,9 @@ export const webhook = asyncHandler(async(req, res) => {
     const sig = req.headers['stripe-signature'];
   
     let event;
- // console.log({endpointSecret:process.env.endpointSecret})
+  
     try {
+        //console.log({endpointSecret:process.env.endpointSecret})
       event = stripe.webhooks.constructEvent(req.body,sig, process.env.endpointSecret);
     } catch (err) {
       res.status(400).send(`Webhook Error: ${err.message}`);
@@ -231,15 +232,16 @@ export const webhook = asyncHandler(async(req, res) => {
     switch (event.type) {
       case 'checkout.session.completed':
         const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
-            status:"placed"
+            status: 'placed'
         },{new:true})
        return res.json({order:order})
         break;
       // ... handle other event types
       default:
         res.json({message:"invalid payment"})
-        console.log(`Unhandled event type ${event.type}`);
+        //console.log(`Unhandled event type ${event.type}`);
     }
-  
+   
     // Return a 200 res to acknowledge receipt of the event
+    res.send()
   });

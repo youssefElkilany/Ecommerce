@@ -28,7 +28,7 @@ router.put('/',
 )
 router.put('/2',
     fileUpload(fileValidation.image).single('image'),
-   // validation(Val.updateCategoryVal),
+    validation(Val.updateCategoryVal),
     asyncHandler(categoryController.updateCategory2)
 )
 
@@ -38,7 +38,7 @@ router.delete('/:categoryId',
     asyncHandler(categoryController.deleteCategory)
 )
 
-router.get('/search'//,validation(Val.searchCategoryVal)
+router.get('/search',validation(Val.searchCategoryVal)
 , categoryController.searchCategory)
 
 

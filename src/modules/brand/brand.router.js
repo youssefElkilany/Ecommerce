@@ -17,13 +17,13 @@ const router = Router()
 
 
 router.get('/',brandController.getbrands)
-router.get('/id/:_id',auth([roles.admin]),validation(val.searchbyId),brandController.brandbyId)
+router.get('/id/:_id',auth([roles.user]),validation(val.searchbyId),brandController.brandbyId)
 router.get('/search',validation(val.searchbyName),brandController.searchbyName)
 
 
 router.post("/",auth([roles.user]),fileUpload(fileValidation.image).single('image'),validation(val.addbrand) ,brandController.addbrand)
-router.put("/",auth([roles.admin]),validation(val.updatebrand),fileUpload(fileValidation.image).single('image') ,brandController.updatebrand)
-router.delete("/_id",auth([roles.admin]),validation(val.deletebrand),brandController.deletbrand)
+router.put("/",auth([roles.user]),fileUpload(fileValidation.image).single('image'),validation(val.updatebrand) ,brandController.updatebrand)
+router.delete("/_id",auth([roles.user]),validation(val.deletebrand),brandController.deletbrand)
 
 
 

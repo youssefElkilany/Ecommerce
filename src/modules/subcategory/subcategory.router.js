@@ -15,9 +15,9 @@ router.post("/:categoryId",auth([roles.user]),fileUpload(fileValidation.image).s
 
 router.delete("/:_id",validation(val.deleteSubCategory),subcategoryController.deleteSubCategory)
 
-router.put("/",fileUpload(fileValidation.image).single('image'),subcategoryController.updateSubCategory)
+router.put("/",fileUpload(fileValidation.image).single('image'),validation(val.updateSubCategory),subcategoryController.updateSubCategory)
 
-router.get("/search",subcategoryController.searchByName)
+router.get("/search",validation(val.searchSubCategory),subcategoryController.searchByName)
 
 
 export default router
