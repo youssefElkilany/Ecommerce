@@ -7,10 +7,12 @@ const router = Router()
 
 
 
-router.route('/')
+router.route('/')//roles.user
 .get(auth([roles.user]),orderController.getOrderByUserId)
-.post(auth(roles.user),validation(val.addOrder),orderController.addOrder)
+.post(auth(roles.admin),validation(val.addOrder),orderController.addOrder)
  
+
+router.get('/successOrder',orderController.successUrl)
 router.post('/webhook', express.raw({type: 'application/json'}),orderController.webhook) 
 
 

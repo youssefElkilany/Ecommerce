@@ -40,14 +40,12 @@ const initApp = (app, express) => {
     app.use(`/cart`, cartRouter)
     app.use(`/order`, orderRouter)
     app.use(`/brand`, branRouter)
-    app.use('/',(req,res,next)=>{
-        res.json("welcome")
-    })
-    app.use('/',(req,res,next)=>{
-        res.json("welcome")
-    })
+   
     app.all('*', (req, res, next) => {
         res.send("In-valid Routing Plz check url  or  method")
+    })
+    app.use('/',(req,res,next)=>{
+        res.json("welcome")
     })
    
     app.use(globalErrorHandling)

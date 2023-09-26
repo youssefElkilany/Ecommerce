@@ -12,10 +12,10 @@ const router = Router()
 //     res.status(200).json({message:"Cart Module"})
 // })
 
-router.route('/')
-.get(auth([roles.user]),cartcontroller.getUserCart)
+router.route('/')//roles.user
+.get(auth([roles.admin]),cartcontroller.getUserCart)
 
-.post(auth([roles.user]),validation(val.addtoCart),cartcontroller.addToCart)
+.post(auth([roles.admin]),validation(val.addtoCart),cartcontroller.addToCart)
 
 
 router.route('/:product')

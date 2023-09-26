@@ -4,7 +4,7 @@ import userModel from "../../DB/model/User.model.js";
 
 
 
-const auth = (roles)=> {
+const auth = (roles=[])=> {
 
     return async (req, res, next) => {
     try {

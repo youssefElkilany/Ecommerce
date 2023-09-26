@@ -7,7 +7,8 @@ import Stripe from "stripe";
 import sendEmail from "../../../utils/email.js";
 import { nanoid } from "nanoid";
 import createInvoice from "../../../utils/PDFKits.js";
-
+import jwt from "jsonwebtoken";
+//to open connection to stripe
 const stripe = new Stripe(process.env.stripe_Key)
 
 
@@ -165,34 +166,37 @@ else{
 }
 
 // console.log({order:order.products.name})
-const orderCode = `${req.user.email}_${nanoid(3)}`
-  // generat invoice object
-  const orderinvoice = {
-    shipping: {
-      name: req.user.email,
-      address: order.address,
-      city: 'Cairo',
-      state: 'Cairo',
-      country: 'Cairo',
-    },
-    orderCode,
-    date: order.createdAt,
-    items: order.products,
-    subTotal: order.price,
-    paidAmount: order.paymentPrice,
-  }
-  // fs.unlink()
-  await createInvoice(orderinvoice, `${orderCode}.pdf`)
-  await sendEmail({
-    to: req.user.email,
-    subject: 'Order Confirmation',
-    message: '<h1> please find your invoice pdf below</h1>',
-    attachments: [
-      {
-        path: `./Files/${orderCode}.pdf`,
-      },
-    ],
-  })
+
+//invoice ==============================
+
+// const orderCode = `${req.user.email}_${nanoid(3)}`
+//   // generat invoice object
+//   const orderinvoice = {
+//     shipping: {
+//       name: req.user.email,
+//       address: order.address,
+//       city: 'Cairo',
+//       state: 'Cairo',
+//       country: 'Cairo',
+//     },
+//     orderCode,
+//     date: order.createdAt,
+//     items: order.products,
+//     subTotal: order.price,
+//     paidAmount: order.paymentPrice,
+//   }
+//   // fs.unlink()
+//   await createInvoice(orderinvoice, `${orderCode}.pdf`)
+//   await sendEmail({
+//     to: req.user.email,
+//     subject: 'Order Confirmation',
+//     message: '<h1> please find your invoice pdf below</h1>',
+//     attachments: [
+//       {
+//         path: `./Files/${orderCode}.pdf`,
+//       },
+//     ],
+//   })
   //return res.status(201).json({ message: 'Done', order })
 
 
@@ -206,6 +210,7 @@ if(paymentMethod == 'card')
         const coupon = await stripe.coupons.create({percent_off:req.body.Coupon.amount,duration:'once'})
         req.body.stripeCoupon = coupon.id
     }
+    const successToken = jwt.sign({order:order._id},'tokenSuccssess')
     //byb2l data k string fa 3shan keda we converted id to string 
     const session = await stripe.checkout.sessions.create({
         
@@ -215,7 +220,7 @@ if(paymentMethod == 'card')
         metadata:{
             orderId:order._id.toString()
         },
-        success_url:process.env.Success_Url,
+        success_url:`${req.protocol}://${req.headers.host}/order/successOrder?token= ${successToken}`,
         cancel_url:process.env.Cancel_Url,
         
         discounts:req.body.stripeCoupon? [{coupon:req.body.stripeCoupon}]:[],
@@ -250,10 +255,26 @@ return res.json({message:"order successfull",order})
 
 
 
+export const successUrl= asyncHandler(async(req,res,next)=>{
+
+    const {successToken} = req.query
+
+    const token =  jwt.verify(successToken,"tokenSuccssess")
+
+    console.log(token.order)
+    const order = await orderModel.findById(token.order)
+    if(!order)
+    {
+        return next(new Error("order not found"))
+    }
+    return res.json({order})
+    
+})
+
 
 //event.data.object.metadata
 export const webhook = asyncHandler(async(req, res) => {
-    const sig = req.headers['stripe-signature'];
+    const sig = req.headers['stripe-signature'].toString();
   
     let event;
   

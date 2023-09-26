@@ -9,6 +9,19 @@ const router = Router()
 
 
 router.get('/',productController.getproducts )
+//auth(roles.admin),
+router.post("/add",auth(roles.admin),fileUpload(fileValidation.image).fields([
+    {name:'image',maxCount:1},
+    {name:'coverImages',maxCount:10}
+]),
+productController.adddProduct)
+
+router.put("/update",auth(roles.admin),fileUpload(fileValidation.image).fields([
+    {name:'image',maxCount:1},
+    {name:'coverImages',maxCount:10}
+])
+,productController.updateProductt)
+
 router.post("/",fileUpload(fileValidation.image).fields([
     {name:'image',maxCount:1},
     {name:'coverImages',maxCount:10}
