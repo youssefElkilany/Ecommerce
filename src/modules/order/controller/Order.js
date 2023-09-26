@@ -210,7 +210,7 @@ if(paymentMethod == 'card')
         const coupon = await stripe.coupons.create({percent_off:req.body.Coupon.amount,duration:'once'})
         req.body.stripeCoupon = coupon.id
     }
-    const successToken = jwt.sign({order:order._id},'tokenSuccssess')
+    //const successToken = jwt.sign({order:order._id},'tokenSuccssess')
     //byb2l data k string fa 3shan keda we converted id to string 
     const session = await stripe.checkout.sessions.create({
         
@@ -219,8 +219,8 @@ if(paymentMethod == 'card')
         customer_email:req.user._id,
         metadata:{
             orderId:order._id.toString()
-        },
-        success_url:`${req.protocol}://${req.headers.host}/order/successOrder?token= ${successToken}`,
+        },//?token= ${successToken}
+        success_url:`${req.protocol}://${req.headers.host}/product`,
         cancel_url:process.env.Cancel_Url,
         
         discounts:req.body.stripeCoupon? [{coupon:req.body.stripeCoupon}]:[],
@@ -243,7 +243,7 @@ if(paymentMethod == 'card')
 }
 
 
-
+whsec_3ddlPKBGNpl7EJEQwmC6yEHRbvuBirnE
 
 
 
@@ -257,13 +257,13 @@ return res.json({message:"order successfull",order})
 
 export const successUrl= asyncHandler(async(req,res,next)=>{
 
-    const {successToken} = req.query
+   // const {successToken} = req.query
 
-    const token =  jwt.verify(successToken,"tokenSuccssess")
-    if(token)
-    {
-        return res.json({message:"invalid token"})
-    }
+    // const token =  jwt.verify(successToken,"tokenSuccssess")
+    // if(token)
+    // {
+    //     return res.json({message:"invalid token"})
+    // }
 
     console.log(token.order)
     const order = await orderModel.findById(token.order)
@@ -274,6 +274,37 @@ export const successUrl= asyncHandler(async(req,res,next)=>{
     return res.json({order})
     
 })
+
+
+export const webhookOriginal = asyncHandler(async(req, res) => {
+    const sig = req.headers['stripe-signature'].toString();
+  
+    let event;
+  
+    try {
+        //console.log({endpointSecret:process.env.endpointSecret})
+      event = stripe.webhooks.constructEvent(req.body,sig, "whsec_3ddlPKBGNpl7EJEQwmC6yEHRbvuBirnE");
+    } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+    }
+  
+    // Handle the event
+if(event.type == 'checkout.session.completed')
+{
+    const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
+        status: 'placed'
+    },{new:true})
+    console.log(order)
+   return res.json({order:order})
+}
+else{
+    res.json({message:"invalid payment"})
+}
+
+  });
+
+
 
 
 //event.data.object.metadata
