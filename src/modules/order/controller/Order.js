@@ -287,19 +287,31 @@ export const webhook = asyncHandler(async(req, res) => {
     }
   
     // Handle the event
-    switch (event.type) {
-      case 'checkout.session.completed':
-        const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
-            status: 'placed'
-        },{new:true})
-       return res.json({order:order})
-        break;
-      // ... handle other event types
-      default:
-        res.json({message:"invalid payment"})
-        //console.log(`Unhandled event type ${event.type}`);
-    }
+if(event.type == 'checkout.session.completed')
+{
+    const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
+        status: 'placed'
+    },{new:true})
+    console.log(order)
+   return res.json({order:order})
+}
+else{
+    res.json({message:"invalid payment"})
+}
+
+    // switch (event.type) {
+    //   case 'checkout.session.completed':
+    //     const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
+    //         status: 'placed'
+    //     },{new:true})
+    //    return res.json({order:order})
+    //     break;
+    //   // ... handle other event types
+    //   default:
+    //     res.json({message:"invalid payment"})
+    //     //console.log(`Unhandled event type ${event.type}`);
+    // }
    
-    // Return a 200 res to acknowledge receipt of the event
-    res.send()
+    // // Return a 200 res to acknowledge receipt of the event
+    // res.send()
   });
