@@ -149,21 +149,21 @@ if(req.body.Coupon)
 
 
 //to delete cart or products that exist in cart 
-if(req.body.products)
-{
-const cart = await cartModel.updateOne({userId:req.user._id},{
-    $pull:{
-        products:{
-            product:{
-                $in:foundedIds
-            } 
-        }
-    }
-})
-}
-else{
-    const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
-}
+// if(req.body.products)
+// {
+// const cart = await cartModel.updateOne({userId:req.user._id},{
+//     $pull:{
+//         products:{
+//             product:{
+//                 $in:foundedIds
+//             } 
+//         }
+//     }
+// })
+// }
+// else{
+//     const cart = await cartModel.updateOne({userId:req.user._id},{products:[]})
+// }
 
 // console.log({order:order.products.name})
 
@@ -260,6 +260,10 @@ export const successUrl= asyncHandler(async(req,res,next)=>{
     const {successToken} = req.query
 
     const token =  jwt.verify(successToken,"tokenSuccssess")
+    if(token)
+    {
+        return res.json({message:"invalid token"})
+    }
 
     console.log(token.order)
     const order = await orderModel.findById(token.order)
