@@ -218,7 +218,7 @@ if(paymentMethod == 'card')
         mode:'payment',
         customer_email:req.user._id,
         metadata:{
-            orderId:order._id.toString()
+           orderId:order._id.toString()
         },//?token= ${successToken}
         success_url:`${req.protocol}://${req.headers.host}/product`,
         cancel_url:process.env.Cancel_Url,
@@ -243,7 +243,7 @@ if(paymentMethod == 'card')
 }
 
 
-whsec_3ddlPKBGNpl7EJEQwmC6yEHRbvuBirnE
+
 
 
 
@@ -265,7 +265,7 @@ export const successUrl= asyncHandler(async(req,res,next)=>{
     //     return res.json({message:"invalid token"})
     // }
 
-    console.log(token.order)
+   // console.log(token.order)
     const order = await orderModel.findById(token.order)
     if(!order)
     {
@@ -277,7 +277,7 @@ export const successUrl= asyncHandler(async(req,res,next)=>{
 
 
 export const webhookOriginal = asyncHandler(async(req, res) => {
-    const sig = req.headers['stripe-signature'].toString();
+    const sig = req.headers['stripe-signature'];
   
     let event;
   
@@ -292,11 +292,14 @@ export const webhookOriginal = asyncHandler(async(req, res) => {
     // Handle the event
 if(event.type == 'checkout.session.completed')
 {
-    const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
-        status: 'placed'
-    },{new:true})
-    console.log(order)
-   return res.json({order:order})
+    console.log("gg")
+    return res.json(event.data.object)
+    
+//     const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
+//         status: 'placed'
+//     },{new:true})
+//    // console.log(order) 
+//    return res.json({order:order})
 }
 else{
     res.json({message:"invalid payment"})
@@ -327,7 +330,7 @@ if(event.type == 'checkout.session.completed')
     const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
         status: 'placed'
     },{new:true})
-    console.log(order)
+   // console.log(order)
    return res.json({order:order})
 }
 else{
