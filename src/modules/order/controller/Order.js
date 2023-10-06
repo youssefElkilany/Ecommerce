@@ -210,7 +210,8 @@ if(paymentMethod == 'card')
         const coupon = await stripe.coupons.create({percent_off:req.body.Coupon.amount,duration:'once'})
         req.body.stripeCoupon = coupon.id
     }
-    //const successToken = jwt.sign({order:order._id},'tokenSuccssess')
+    const successToken = jwt.sign({_id:order._id},'tokenSuccssess')
+    const cancelToken = jwt.sign({_id:order._id},'cancelToken')
     //byb2l data k string fa 3shan keda we converted id to string 
     const session = await stripe.checkout.sessions.create({
         
@@ -220,8 +221,8 @@ if(paymentMethod == 'card')
         metadata:{
            orderId:order._id.toString()
         },//?token= ${successToken}
-        success_url:`${req.protocol}://${req.headers.host}/product`,
-        cancel_url:process.env.Cancel_Url,
+        success_url:`${req.protocol}://${req.headers.host}/order/successOrder/${successToken}`,
+        cancel_url:`${req.protocol}://${req.headers.host}/order/successOrder/${cancelToken}`,
         
         discounts:req.body.stripeCoupon? [{coupon:req.body.stripeCoupon}]:[],
         line_items:productarr.map(ele=>{
@@ -257,27 +258,55 @@ return res.json({message:"order successfull",order})
 
 export const successUrl= asyncHandler(async(req,res,next)=>{
 
-   // const {successToken} = req.query
+    const {successToken} = req.params
 
-    // const token =  jwt.verify(successToken,"tokenSuccssess")
-    // if(token)
-    // {
-    //     return res.json({message:"invalid token"})
-    // }
-
-   // console.log(token.order)
-    const order = await orderModel.findById(token.order)
-    if(!order)
+    const decodedToken = jwt.verify(successToken,'tokenSuccssess')
+    if(!decodedToken)
     {
-        return next(new Error("order not found"))
+        return next(new Error("token invalid"))
     }
-    return res.json({order})
-    
+
+    const order = await orderModel.findById(decodedToken._id)
+
+    return res.json(order)
+
+
 })
 
+export const cancelUrl = asyncHandler(async(req,res,next)=>{
+
+    const {cancelToken} = req.params
+
+    const decodedToken = jwt.verify(cancelToken,'cancelToken')
+    if(!decodedToken)
+    {
+        return next(new Error("token invalid"))
+    }
+
+    const order = await orderModel.findById(decodedToken._id)
+// mmkn 23ml refund b stripe fel Card 
+    if((order.paymentMethod == 'card'  && order.status != 'waitingForPayment') || (order.paymentMethod == 'Cash' && (order.status == 'delivered' || 'onTheWay')  ))
+    {
+       return next(new Error(`payment cant be cancelled becuase order is ${order.status} ` ))
+    }
+
+    const updateOrder = await orderModel.findOneAndUpdate({createdBy:req.user._id,_id:decodedToken._id},{
+        status:'cancelled'
+    })
+    if(!updateOrder)
+    {
+        return next(new Error("there is something wrong in cancelling order"))
+    }
+
+    
+    return res.json({message:"order cancelled" ,updateOrder})
+
+})
+
+//=========================  WebHooks ===============================
 
 export const webhookOriginal = asyncHandler(async(req, res) => {
-    const sig = req.headers['stripe-signature'];
+    const sig = req.headers['stripe-signature'].toString();
   
     let event;
   
@@ -292,8 +321,13 @@ export const webhookOriginal = asyncHandler(async(req, res) => {
     // Handle the event
 if(event.type == 'checkout.session.completed')
 {
-    console.log("gg")
-    return res.json(event.data.object)
+    const payment = event.data.object
+   
+    const order = await orderModel.findByIdAndUpdate(new mongoose.Types.ObjectId(payment.metadata.orderId),{
+        status: 'placed'
+    });
+console.log(order)
+    return res.json(order)
     
 //     const order = await orderModel.findByIdAndUpdate({_id:event.data.object.metadata},{
 //         status: 'placed'

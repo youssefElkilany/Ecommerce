@@ -222,6 +222,7 @@ export const forgetpassword = asyncHandler(async(req,res,next)=>{
     {
         return next(new Error("password doesnt match"))
     }
+    
     const newcode = nanoid(6)
     const user = await userModel.updateOne({email},{password,code:newcode})
 

@@ -8,7 +8,7 @@ import cloudinary from "../../../utils/cloudinary.js"
 import { apiFeatures } from "../../../utils/ApiFeatures.js";
 
 
-
+//na2es fel product pagination w na2es get product
 
 export const getproducts = asyncHandler(async(req,res,next)=>{
    
@@ -21,64 +21,7 @@ export const getproducts = asyncHandler(async(req,res,next)=>{
 
 
 
-// export const addProduct = asyncHandler(async(req,res,next)=>{
-//     let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
-//    // price = JSON.parse(price)
-// //console.log({name,price,discount,categoryId,subcategoryId,brandId})
 
-//     const checkproduct = await productModel.findOne({name})
-//     if(checkproduct)
-//     {
-
-//          checkproduct.stock += JSON.parse( req.body.quantity)
-//          await checkproduct.save()
-//          return res.json({message:"done",product:checkproduct})
-
-//     }
-
-//     const category = await categoryModel.findById({_id:categoryId})
-//     if(!category)
-//     {
-//         return next(new Error("category not found"))
-//     }
-//     const subcategory = await subcategoryModel.findById({_id:subcategoryId})
-//     if(!subcategory)
-//     {
-//         return next(new Error("subCategory not found"))
-//     }
-//     const brand = await brandModel.findById({_id:brandId})
-//     if(!brand)
-//     {
-//         return next(new Error("brand not found"))
-//     }
-
-//     req.body.slug = slugify(name)
-
-//    req.body.paymentPrice = price - (price * ((discount || 0) / 100))  //ngarab hena mn3mlsh or 
-//     req.body.stock = req.body.quantity
-
-//     if(req.body.sizes)
-//     {
-//         req.body.sizes  = JSON.parse(req.body.sizes)
-//     }
-//     if(req.body.colors)
-//     {
-//         req.body.colors  = JSON.parse(req.body.colors)
-//     }
-
-//     if(!req.file.image)
-//     {
-//         const product = await productModel.create(req.body)
-//         return res.json({message:"done",product})
-//     }
-// //fadel coverImages
-// const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:"product"})
-// //console.log(req)
-// console.log({paymentPrice:paymentPrice})
-//     const product = await productModel.create(req.body)
-//     return res.json({message:"done",product})
-
-// })
 //ay 7aga 8eer plus msh lazm 23mlha parse 3shan tb2a integer
 export const adddProduct = asyncHandler(async(req,res,next)=>{
     let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
@@ -161,7 +104,8 @@ export const adddProduct = asyncHandler(async(req,res,next)=>{
 })
 
 // is there difference lma 23ml push le array mn images gowa coverimages 
-// aw 23ml push l image wa7da bas kol mara  
+// aw 23ml push l image wa7da bas kol mara
+
 export const updateProductt = asyncHandler(async(req,res,next)=>{
     let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
     const product = await productModel.findOne({_id:req.body._id,createdBy:req.user._id})
@@ -262,83 +206,6 @@ product.name = name
 
 
 
-
-export const addProduct = asyncHandler(async(req,res,next)=>{
-    let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
-   
-
-    const checkproduct = await productModel.findOne({name})
-    if(checkproduct)
-    {
-        checkproduct.stock += JSON.parse( req.body.quantity)
-         await checkproduct.save()
-         return res.json({message:"done",product:checkproduct})
-    }
-
-    const category = await categoryModel.findById({_id:categoryId})
-    if(!category)
-    {
-        return next(new Error("category not found"))
-    }
-    const subcategory = await subcategoryModel.findById({_id:subcategoryId})
-    if(!subcategory)
-    {
-        return next(new Error("subCategory not found"))
-    }
-    const brand = await brandModel.findById({_id:brandId})
-    if(!brand)
-    {
-        return next(new Error("brand not found"))
-    }
-
-    req.body.slug = slugify(name)
-
-   req.body.paymentPrice = price - (price * ((discount || 0) / 100))   
-    req.body.stock = req.body.quantity
-
-    if(req.body.sizes)
-    {
-        req.body.sizes  = JSON.parse(req.body.sizes)
-    }
-    if(req.body.colors)
-    {
-        req.body.colors  = JSON.parse(req.body.colors)
-    }
-
-    // if(!req.files.image)
-    // {
-    //     const product = await productModel.create(req.body)
-    //     return res.json({message:"done",product})
-    // }
-   // console.log(req.body.image)
-    const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.image[0].path,{folder:"product/image"})
-    req.body.image = {secure_url,public_id}
-
-
-if(!req.files.coverImages)
-{
-    const product = await productModel.create(req.body)
-    return res.json({message:"done",product})
-}
-//console.log("gg")
-//bytl3 error lw enta md5ltsh coverImages 3la (length)
-    if(req.files.coverImages.length)
-    {
-        const coverImages = []
-        for (let i = 0; i < req.files.coverImages.length; i++) {
-           
-            let {secure_url,public_id} = await cloudinary.uploader.upload(req.files.coverImages[i].path,{folder:"product/coverImages"})
-            coverImages.push({secure_url,public_id})
-        }
-        req.body.coverImages = coverImages
-    }
-  // return res.json({files:req.files})
-
-//console.log({paymentPrice:paymentPrice})
-    const product = await productModel.create(req.body)
-    return res.json({message:"done",product})
-
-})
 
  
 

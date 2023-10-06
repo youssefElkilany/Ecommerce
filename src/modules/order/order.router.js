@@ -12,7 +12,7 @@ router.route('/')//roles.user
 .post(auth(roles.admin),validation(val.addOrder),orderController.addOrder)
  
 
-router.get('/successOrder',orderController.successUrl)
+router.get('/successOrder/:successToken',orderController.successUrl)
 router.post('/webhook', express.raw({type: 'application/json'}),orderController.webhookOriginal) 
 
 
