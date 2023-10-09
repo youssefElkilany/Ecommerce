@@ -8,7 +8,9 @@ import cloudinary from "../../../utils/cloudinary.js"
 import { apiFeatures } from "../../../utils/ApiFeatures.js";
 
 
-//na2es fel product pagination w na2es get product
+//na2es fel product pagination w na2es get product akml feeha
+// na2es favourites lel product
+// mmkn 23ml kaza payment system ? => stripe | paymob | fawry | paypal
 
 export const getproducts = asyncHandler(async(req,res,next)=>{
    
@@ -93,9 +95,9 @@ export const adddProduct = asyncHandler(async(req,res,next)=>{
     }
 
    // console.log({name,price,discount,paymentPrice})
-    console.log(req.body.sizes,req.body.colors)
-    console.log("==============================")
-    console.log(req.files.coverImages)
+     console.log(req.body.sizes,req.body.colors)
+    // console.log("==============================")
+    // console.log(req.files.coverImages)
 
 
     const product2 = await productModel.create(req.body)
@@ -105,6 +107,9 @@ export const adddProduct = asyncHandler(async(req,res,next)=>{
 
 // is there difference lma 23ml push le array mn images gowa coverimages 
 // aw 23ml push l image wa7da bas kol mara
+
+// ======================= Update Product =============================
+
 
 export const updateProductt = asyncHandler(async(req,res,next)=>{
     let {name,price,discount,categoryId,subcategoryId,brandId}=req.body
@@ -202,92 +207,7 @@ product.name = name
 })
 
 
-
-
-
-
-
- 
-
-export const updateProduct = asyncHandler(async(req,res,next)=>{
-
-    const {_id,name,price,discount} = req.body
-//let stock = req.body
- req.body.slug = slugify(name)
-    const product = await productModel.findById({_id})
-    if(!product)
-    {
-        return next(new Error("product not found"))
-    }
-
-    const checkName = await productModel.findOne({_id,name})
-    if(!checkName)
-    {
-        const checkName = await productModel.findOne({name})
-        if(checkName)
-        {
-            return next(new Error("name already exist"))
-        }
-
-    }
-  // stock = JSON.parse(stock)
-        // to update stock msh sh8ala ya mawlana
-        if(req.body.stock)
-        {
-           // product.stock = JSON.parse(product.stock)
-            product.stock += JSON.parse(req.body.stock) 
-        }
-
-        
-    
-        req.body.paymentPrice = price - (price * (discount || 0) /100)
-        
-   
- // lw md5lsh images
- if(req.files.image )
- {
-    const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.image[0].path,{folder:'product/image'})
-    req.body.image =  {secure_url,public_id}
- }
-
-
-if(product.coverImages.length>9)
-{
-return next(new Error("photo limit exceded 1"))
-}
-
-   
-
-    if(!req.files.coverImages)
-    {
-        const update  = await productModel.findOneAndUpdate({_id},req.body,{new:true})
-        return res.json({message:"done",Results:update})
-    }
-
-    if(req.files.coverImages.length)
-    {
-        if((req.files.coverImages.length + product.coverImages.length )>12)
-        {
-            return next(new Error("photo limit exceded 2"))
-        }
-        const coverImages = []
-        for (let i = 0; i < req.files.coverImages.length; i++) {
-            const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.coverImages[i].path,{folder:'product/coverImage'})
-            coverImages.push({secure_url,public_id})
-
-            //product.coverImages.push(coverImages)
-        }
-       
-        req.body.coverImages = coverImages
-        //product.coverImages.push(coverImages)
-    }
-//mmkn n3ml push lel images 3shan tt3mlha push 3ady msh ka array
-
-    const update  = await productModel.findOneAndUpdate({_id},{product:req.body,$push:{coverImages:req.body.coverImages}} ,{new:true})
-    //const update  = await productModel.findOneAndUpdate({_id},{product:req.body} ,{new:true})
-    return res.json({message:"done",result:update})
-})
-
+// ======================= Delete Product ====================================
 
 export const deleteproduct = asyncHandler(async(req,res,next)=>{
     const {_id}=req.params
@@ -302,11 +222,11 @@ export const deleteproduct = asyncHandler(async(req,res,next)=>{
         return next(new Error("u are not authorized to delete this product"))
     }
    // checkcat.image.public_id
-     await cloudinary.uploader.destroy(checkcat.image.public_id)
-     await cloudinary.uploader.destroy(category.coverImages.public_id)
-    //  checkcat.forEach(async category => {
-    //     await cloudinary.uploader.destroy(category.coverImages.public_id)
-    //  });
+     await cloudinary.uploader.destroy(checkcat.image[0].public_id)
+     //await cloudinary.uploader.destroy(category.coverImages.public_id)
+     checkcat.forEach(async category => {
+        await cloudinary.uploader.destroy(category.coverImages.public_id)
+     });
 
     return res.status(StatusCodes.ACCEPTED).json({ message: "deleted", checkcat })
 })
