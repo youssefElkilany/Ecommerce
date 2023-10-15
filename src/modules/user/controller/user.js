@@ -1,5 +1,5 @@
 //import userModel from "../../../../DB/model/User.model.js";
-
+import productModel from "../../../../DB/model/Product.model.js"
 import userModel from "../../../../DB/model/User.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 
@@ -22,3 +22,32 @@ export const deleteUser = asyncHandler(async(req,res,next)=>{
     }
     return res.json("user deleted")
 })
+
+
+
+export const addToFavourites = asyncHandler(async(req,res,next)=>{
+    const {productId} = req.params
+
+    const fav = await productModel.findOneAndUpdate({favourites:productId},{
+        $addToSet:{
+            favourites:productId
+        }
+    },{new:true})
+
+    return res.json({message:"done",fav})
+})
+
+
+
+export const removeFromFavourites = asyncHandler(async(req,res,next)=>{
+    const {productId} = req.params
+
+    const fav = await productModel.findOneAndUpdate({favourites:productId},{
+        $pull:{
+            favourites:productId
+        }
+    },{new:true})
+
+    return res.json({message:"done",fav})
+})
+

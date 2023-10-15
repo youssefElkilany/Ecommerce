@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import orderModel from "./Order.model.js"
 import { roles } from "../../src/middleware/validation.js";
 import couponModel from "./Coupon.model.js";
@@ -44,7 +44,8 @@ const userSchema = new Schema({
     },
     image: String,
     DOB: String,
-    code:String
+    code:String,
+    favourites:[{type:Types.ObjectId,ref:"Product"}]
 }, {
     timestamps: true
 })
