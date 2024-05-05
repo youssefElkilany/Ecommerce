@@ -11,6 +11,7 @@ export const getallusers = asyncHandler(async(req,res,next)=>{
 })
 
 
+
 export const deleteUser = asyncHandler(async(req,res,next)=>{
 
     const {userId} = req.params
@@ -50,4 +51,3 @@ export const removeFromFavourites = asyncHandler(async(req,res,next)=>{
 
     return res.json({message:"done",fav})
 })
-

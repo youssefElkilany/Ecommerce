@@ -8,12 +8,14 @@ import {
 import { asyncHandler } from "../../../utils/errorHandling.js";
 
 
-
+// ================= get categories =====================
 
 export const Categories = asyncHandler(async(req,res,next)=>{
     const category = await categoryModel.find()
     return res.json({message:"done", category })
 })
+
+
 //virtual populate
 export const Categories2 = asyncHandler(async(req,res,next)=>{
     const category = await categoryModel.find().populate('SubCategory') //SubCategory

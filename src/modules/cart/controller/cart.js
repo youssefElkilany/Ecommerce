@@ -29,6 +29,18 @@ export const getUserCart = asyncHandler(async(req,res,next)=>{
             ]
         }
     ])
+let totalPrice = 0
+cart.products.forEach(e => {
+   totalPrice += e.product.paymentPrice * e.quantity
+});
+
+
+
+
+
+
+
+
 
 //     const productt = await productModel.find()    
 
@@ -45,11 +57,14 @@ export const getUserCart = asyncHandler(async(req,res,next)=>{
 //     }
     
 // }
+
+//n3ml hena loop n3ml feeha check 3la kol product mawgood wla l2 fel database
+//el howa lw ana 3mlt add to cart b3deeha product etms7 mn database
 let totalprice = 0
 cart.products =  cart.products.filter(ele=>{
     if(ele?.product)
     {
-         totalprice+= ele.product.paymentPrice * ele.quantity
+         totalprice+= ele.product?.paymentPrice * ele.quantity
          return ele
     }
 })

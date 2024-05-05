@@ -312,7 +312,7 @@ export const webhookOriginal = asyncHandler(async(req, res) => {
   
     try {
         //console.log({endpointSecret:process.env.endpointSecret})
-      event = stripe.webhooks.constructEvent(req.body,sig, "whsec_3ddlPKBGNpl7EJEQwmC6yEHRbvuBirnE");
+      event = stripe.webhooks.constructEvent(req.body,sig, process.env.endpointSecret);
     } catch (err) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;

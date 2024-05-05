@@ -9,7 +9,8 @@ const categorySchema = new Schema({
 }, {
     timestamps: true, toJSON:{virtuals:true}, toObject:{virtuals:true}
 })
-categorySchema.virtual('SubCategory',{
+categorySchema.virtual('SubCategory',{  
+    
     ref:'SubCategory',
     localField:'_id',
     foreignField:'categoryId'    

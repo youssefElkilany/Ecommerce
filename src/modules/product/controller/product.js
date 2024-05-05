@@ -9,7 +9,7 @@ import { apiFeatures } from "../../../utils/ApiFeatures.js";
 
 
 //na2es fel product pagination w na2es get product akml feeha
-// na2es favourites lel product
+// na2es favourites lel product => done
 // mmkn 23ml kaza payment system ? => stripe | paymob | fawry | paypal
 
 export const getproducts = asyncHandler(async(req,res,next)=>{
@@ -128,11 +128,17 @@ export const updateProductt = asyncHandler(async(req,res,next)=>{
 
    if(name)
    {
-    const findName = await productModel.findOne({name})
-    if(findName)
+    // b3ml check lw name dah != name bta3 nafs product elb8yr feeh 
+    //kont mmkn 23mlha fe nafs query
+    if(name != product.name)
     {
-        return next(new Error("product already exist"))
+        const findName = await productModel.findOne({name})
+        if(findName)
+        {
+            return next(new Error("product already exist"))
+        }
     }
+   
 product.name = name
    }
    //to increase stock
@@ -158,7 +164,7 @@ product.name = name
    }
    
    // colors sizes images
-   //front end ygeblo data bta3tha w howa y5tar yzwd aw y3mlha mn awl w gdeed
+   //front end ygeblo data bta3tha w howa y5tar yzwd aw y3mlha mn awl w gdeed => dah elhy7sl
    // w fe nafs elwa2t akny bd5lha mn awl w gdeed 
    // ana faker en feeh 7aga kanet btsbt value 3la input msln w lw 3ayz t3dl feeha t3dl
 
